@@ -1,0 +1,5 @@
+[
+  "tests/test_parsing.py::test_parse_boe_csv_shapes_wide_to_long",
+  "tests/test_parsing.py::test_parse_ons_csv_handles_missing_or_malformed_rows_gracefully",
+  "tests/test_parsing.py::test_parse_ons_csv_keeps_only_monthly_rows"
+]

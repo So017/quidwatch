@@ -1,0 +1,9 @@
+{
+  "as_of": "2026-06-01",
+  "bank_rate": 3.75,
+  "cpi_annual_rate": 2.6,
+  "time_deposit_rate": 3.36,
+  "instant_access_deposit_rate": 1.65,
+  "real_rate_time_deposits": 0.7599999999999998,
+  "real_rate_instant_access": -0.9500000000000002
+}

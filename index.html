@@ -312,11 +312,28 @@
 
     const tooltip = document.getElementById("chart-tooltip");
     tooltip.innerHTML = `<div class="tt-date">${p.label}</div>${rows}`;
+    tooltip.style.display = "block"; // must be visible before measuring its width below
 
     const containerRect = document.getElementById("chart-container").getBoundingClientRect();
-    tooltip.style.left = `${evt.clientX - containerRect.left}px`;
-    tooltip.style.top = `${evt.clientY - containerRect.top}px`;
-    tooltip.style.display = "block";
+    const tooltipWidth = tooltip.offsetWidth;
+    const tooltipHeight = tooltip.offsetHeight;
+    const padding = 8; // keep a small gap from the chart's own edge
+
+    // Horizontal: centred on the cursor by default (matches the CSS
+    // translateX(-50%)), but nudged inward if that would push either edge
+    // of the tooltip past the container's bounds.
+    let x = evt.clientX - containerRect.left;
+    const halfWidth = tooltipWidth / 2;
+    x = Math.max(halfWidth + padding, Math.min(x, containerRect.width - halfWidth - padding));
+
+    // Vertical: normally sits above the cursor (CSS translateY(-115%)) -
+    // clamp so it doesn't get pushed off the top of the chart when
+    // hovering near the very top edge.
+    let y = evt.clientY - containerRect.top;
+    y = Math.max(tooltipHeight * 1.15 + padding, y);
+
+    tooltip.style.left = `${x}px`;
+    tooltip.style.top = `${y}px`;
   }
 
   function hideChartTooltip() {

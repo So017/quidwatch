@@ -574,14 +574,14 @@
   <!-- BOE DECISION -->
   <section class="block" id="boe">
     <div class="block-head">
-      <h2>Latest MPC decision</h2>
-      <span class="as-of">Meeting: sample date</span>
+      <h2>Bank Rate</h2>
+      <span class="as-of" id="mpc-asof">Loading…</span>
     </div>
     <div class="decision-card">
-      <p class="tag">🚧 Not yet wired up — placeholder</p>
-      <h3>MPC votes to hold Bank Rate at 4.25%</h3>
-      <p>Placeholder summary: what changed since the last meeting, and what it means for mortgage and savings rates in plain English — written by us, not lifted from a press release.</p>
-      <p class="vote">Vote split: sample · Next meeting: sample date</p>
+      <p class="tag" id="mpc-tag">Loading…</p>
+      <h3 id="mpc-headline">Loading…</h3>
+      <p id="mpc-subtext">Loading…</p>
+      <p class="vote">🚧 Vote split and "what this means for you" commentary — not yet written. That part needs to be mine, not automated.</p>
     </div>
   </section>
 
@@ -867,6 +867,40 @@
       realValEl.textContent = fmtPct(latest.real_rate_time_deposits);
       realValEl.className = "ledger-value " + (isPositive ? "pos" : "neg");
       setDelta("real-rate-delta", latest.real_rate_time_deposits, previous ? previous.real_rate_time_deposits : null, "up-good");
+
+      // --- Bank Rate / "MPC decision" card ---
+      // Honesty constraint: our data is monthly, and BoE doesn't publish
+      // exact meeting dates through this feed, so we never invent a
+      // specific "meeting date" or vote split. We only state what the
+      // Bank Rate series itself actually shows: its current level, and
+      // when it last changed.
+      const priorBankRate = latestAnyIdx > 0 ? rows[latestAnyIdx - 1].bank_rate : null;
+      const justChanged = priorBankRate !== null && Math.abs(latestAny.bank_rate - priorBankRate) > 0.001;
+
+      let lastChangeRow = null;
+      for (let i = rows.length - 1; i > 0; i--) {
+        const cur = rows[i].bank_rate, prev = rows[i - 1].bank_rate;
+        if (cur !== null && prev !== null && Math.abs(cur - prev) > 0.001) {
+          lastChangeRow = rows[i];
+          break;
+        }
+      }
+
+      document.getElementById("mpc-asof").textContent = `Bank Rate data as of ${fmtDate(latestAny.date)}`;
+
+      if (justChanged) {
+        const direction = latestAny.bank_rate > priorBankRate ? "raised" : "cut";
+        document.getElementById("mpc-tag").textContent = direction === "raised" ? "Rate raised" : "Rate cut";
+        document.getElementById("mpc-headline").textContent = `Bank Rate ${direction} to ${fmtPct(latestAny.bank_rate)}`;
+        document.getElementById("mpc-subtext").textContent =
+          `${direction === "raised" ? "Up" : "Down"} from ${fmtPct(priorBankRate)} the month before, based on the Bank of England's own published rate.`;
+      } else {
+        document.getElementById("mpc-tag").textContent = "Rate held";
+        document.getElementById("mpc-headline").textContent = `Bank Rate held at ${fmtPct(latestAny.bank_rate)}`;
+        document.getElementById("mpc-subtext").textContent = lastChangeRow
+          ? `Unchanged since it last moved to ${fmtPct(lastChangeRow.bank_rate)} in ${fmtDate(lastChangeRow.date)}.`
+          : `No change recorded in the tracked history.`;
+      }
 
       // --- Chart (last 36 complete months, or all of them if fewer) ---
       const chartRows = complete.slice(-36);

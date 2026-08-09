@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Is Your Money Really Growing When You Save? | Quidwatch</title>
+<meta name="description" content="A look at UK time deposit rates vs CPI inflation, and why the headline interest rate on your savings can be misleading.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<header>
+  <div class="nav-wrap">
+    <a class="wordmark" href="../index.html">Quidwatch</a>
+    <button id="theme-toggle" type="button" aria-label="Switch between light and dark theme">Light</button>
+  </div>
+</header>
+
+<main class="article-main">
+  <a class="back-link" href="../index.html#analysis">← Back to Quidwatch</a>
+
+  <p class="byline">Analysis by Sonia Leung · 10 Aug 2026 · Data: Bank of England, ONS</p>
+
+  <h1 class="article-title">Is Your Money Really Growing When You Save?</h1>
+
+  <article>
+    <p>At first glance, the savings picture looks quite positive. The average time deposit rate has remained above 3% for around three years. However, looking at the interest rate alone does not tell us whether our savings are actually growing in value.</p>
+
+    <p>The more important question is how the savings rate compares with inflation. In March 2025, CPI was 2.6%, compared with around 3% for the average time deposit rate. This gave savers a small positive real return. However, CPI rose sharply to 3.5% in April, the largest one-month jump in over a year and above what forecasters had expected. This wasn't a shift in underlying demand. It came from a cluster of regulated household bills resetting at once: Ofgem raised the energy price cap by 6.4%, water bills rose by the largest amount on record, and most councils raised council tax by the maximum 5% allowed without a local referendum. As inflation pushed above the average deposit rate, the real savings rate moved into negative territory.</p>
+
+    <p>This shows why the headline interest rate can be misleading. A 3% interest rate may sound attractive, but if prices are also rising by around 3%, our money is mainly keeping pace with the rising cost of living rather than increasing its purchasing power. In other words, our savings can grow in pounds while remaining almost unchanged in real terms.</p>
+
+    <p>The picture improved as inflation fell. CPI declined to 2.8% in April 2026 and further to 2.6% in June. With the average time deposit rate remaining above 3%, savers were finally earning a small positive real return in May and June. It's worth noting that part of this improvement is arithmetic rather than new good news: April 2025's price shock is now inside the twelve-month comparison window, which mechanically pulls the year-on-year figure down even before underlying prices ease.</p>
+
+    <p>For savers, this highlights an important point: <strong>what matters is not simply how much interest your money earns, but how much that return exceeds inflation.</strong> The gap between the two rates determines whether our savings are actually gaining purchasing power or simply keeping up with the rising cost of living.</p>
+  </article>
+
+  <div class="sources">
+    Sources: Economics Observatory, <a href="https://www.economicsobservatory.com/why-has-uk-inflation-risen" target="_blank" rel="noopener">"Why has UK inflation risen?"</a> (May 2025) ·
+    MoneyWeek, <a href="https://moneyweek.com/economy/live/uk-inflation-april-cpi-report" target="_blank" rel="noopener">"UK inflation jumps to 3.5%"</a> (May 2025) ·
+    ONS CPI series <a href="https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/d7g7/mm23" target="_blank" rel="noopener">D7G7</a> ·
+    <a href="https://www.bankofengland.co.uk/boeapps/iadb/" target="_blank" rel="noopener">Bank of England IADB</a>
+  </div>
+</main>
+
+<footer class="simple-footer">
+  Quidwatch: an independent UK savings &amp; inflation tracker. Not financial advice.
+</footer>
+
+<script>
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    const btn = document.getElementById("theme-toggle");
+    if (btn) btn.textContent = theme === "light" ? "Dark" : "Light";
+  }
+  const saved = localStorage.getItem("quidwatch-theme");
+  applyTheme(saved === "light" || saved === "dark" ? saved : "dark");
+  document.getElementById("theme-toggle").addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "light" ? "dark" : "light";
+    localStorage.setItem("quidwatch-theme", next);
+    applyTheme(next);
+  });
+</script>
+
+</body>
+</html>

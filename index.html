@@ -3,583 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quidwatch — UK personal finance, tracked with data</title>
+<title>Quidwatch: UK personal finance, tracked with data</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #171533;
-    --bg-elevated: #211D47;
-    --bg-deep: #100E26;
-    --ink: #F3F1FA;
-    --ink-soft: #B7B2D6;
-    --sterling-green: #4FD1A0;
-    --oxblood: #E85D75;
-    --gilt: #B8901F;
-    --amethyst: #A78BFA;
-    --line: #3A3468;
-    --muted: #8B84B5;
-    /* Always-light text, used only on the permanently-dark bg-deep bands
-       (ribbon, footer, tooltip) so those stay readable in BOTH themes -
-       unlike --ink, this one never flips. */
-    --on-deep: #F3F1FA;
-    --font-display: 'Space Grotesk', sans-serif;
-    --font-body: 'Source Serif 4', Georgia, serif;
-    --font-mono: 'IBM Plex Mono', monospace;
-  }
-
-  :root[data-theme="light"] {
-    --bg: #F5F2FB;
-    --bg-elevated: #FFFFFF;
-    --ink: #1C1836;
-    --ink-soft: #47406E;
-    --sterling-green: #0E8F65;
-    --oxblood: #B23A56;
-    --amethyst: #6D48C9;
-    --line: #DCD6EC;
-    --muted: #6F6892;
-    /* bg-deep and on-deep intentionally NOT overridden - the ribbon,
-       footer, and tooltip stay a dark navy band with light text in both
-       themes, the way one dark accent band does on the original mockup. */
-  }
-
-  * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--font-body);
-    line-height: 1.55;
-  }
-
-  a { color: inherit; }
-
-  :focus-visible {
-    outline: 2px solid var(--gilt);
-    outline-offset: 3px;
-  }
-
-  .draft-ribbon {
-    background: var(--bg-deep);
-    color: var(--on-deep);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.06em;
-    text-align: center;
-    padding: 6px 12px;
-    text-transform: uppercase;
-  }
-
-  .draft-ribbon strong { color: var(--gilt); }
-
-  /* ---------- Header ---------- */
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: var(--bg);
-    border-bottom: 2px solid var(--gilt);
-  }
-
-  .nav-wrap {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 18px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-  }
-
-  .wordmark {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.35rem;
-    letter-spacing: -0.01em;
-    text-decoration: none;
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-  }
-
-  .wordmark span {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 500;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 28px;
-    margin: 0;
-    padding: 0;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-  }
-
-  nav a { text-decoration: none; color: var(--ink-soft); border-bottom: 1px solid transparent; padding-bottom: 3px; }
-  nav a:hover { border-bottom-color: var(--gilt); color: var(--ink); }
-
-  .nav-toggle { display: none; }
-
-  #theme-toggle {
-    background: transparent;
-    border: 1px solid var(--line);
-    color: var(--ink-soft);
-    padding: 7px 14px;
-    border-radius: 3px;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: border-color 0.15s ease, color 0.15s ease;
-  }
-  #theme-toggle:hover { border-color: var(--gilt); color: var(--ink); }
-
-  /* ---------- Hero / this week's ledger entry ---------- */
-  .hero {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 64px 24px 56px;
-    position: relative;
-  }
-
-  .hero-label {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin: 0 0 10px;
-  }
-
-  .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 32px;
-    align-items: start;
-  }
-
-  .hero h1 {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(2.1rem, 4.2vw, 3.4rem);
-    line-height: 1.08;
-    margin: 0 0 20px;
-    letter-spacing: -0.01em;
-  }
-
-  .hero h1 .neg { color: var(--oxblood); }
-  .hero h1 .pos { color: var(--sterling-green); }
-
-  .hero-note {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin: 0 0 16px;
-    max-width: 56ch;
-  }
-
-  .hero p.lede {
-    font-size: 1.12rem;
-    color: var(--ink-soft);
-    max-width: 56ch;
-    margin: 0 0 28px;
-  }
-
-  .hero-cta {
-    display: inline-flex;
-    gap: 14px;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .btn {
-    padding: 11px 20px;
-    text-decoration: none;
-    border: 1.5px solid var(--ink);
-    color: var(--ink);
-    transition: background 0.15s ease, color 0.15s ease;
-  }
-  .btn:hover { background: var(--gilt); color: var(--bg-deep); border-color: var(--gilt); }
-  .btn.ghost { border-color: var(--line); color: var(--muted); }
-  .btn.ghost:hover { background: transparent; color: var(--ink); border-color: var(--ink); }
-
-  /* Stamp */
-  .stamp {
-    width: 148px;
-    height: 148px;
-    border: 3px double var(--oxblood);
-    border-radius: 50%;
-    color: var(--oxblood);
-    font-family: var(--font-mono);
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-size: 0.66rem;
-    letter-spacing: 0.06em;
-    line-height: 1.35;
-    transform: rotate(-9deg);
-    padding: 14px;
-    flex-shrink: 0;
-    animation: stamp-in 0.5s cubic-bezier(.2,1.6,.4,1) both;
-    animation-delay: 0.15s;
-    margin-top: 8px;
-  }
-
-  .stamp b { display: block; font-size: 0.95rem; letter-spacing: 0.02em; margin-bottom: 2px; }
-
-  @keyframes stamp-in {
-    0% { opacity: 0; transform: rotate(-9deg) scale(2); }
-    100% { opacity: 1; transform: rotate(-9deg) scale(1); }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .stamp { animation: none; }
-    html { scroll-behavior: auto; }
-  }
-
-  /* ---------- Section shell ---------- */
-  section.block {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 48px 24px;
-    border-top: 1px solid var(--line);
-  }
-
-  .block-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 22px;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .block-head h2 {
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0;
-  }
-
-  .block-head .as-of {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--muted);
-  }
-
-  /* ---------- Ledger rows ---------- */
-  .ledger { border-top: 1px solid var(--ink); }
-
-  .ledger-row {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 18px;
-    align-items: center;
-    padding: 16px 4px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .ledger-row:hover { background: var(--bg-elevated); }
-
-  .ledger-label { font-size: 1rem; }
-  .ledger-label small {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-top: 2px;
-  }
-
-  .ledger-value {
-    font-family: var(--font-mono);
-    font-size: 1.3rem;
-    font-weight: 500;
-    text-align: right;
-    min-width: 90px;
-  }
-
-  .ledger-value.pos { color: var(--sterling-green); }
-  .ledger-value.neg { color: var(--oxblood); }
-
-  .ledger-delta {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    text-align: right;
-    min-width: 70px;
-    color: var(--muted);
-  }
-  .ledger-delta.pos { color: var(--sterling-green); }
-  .ledger-delta.neg { color: var(--oxblood); }
-
-  /* ---------- Chart block ---------- */
-  .chart-card {
-    background: var(--bg-elevated);
-    border: 1px solid var(--line);
-    padding: 28px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .chart-tooltip {
-    display: none;
-    position: absolute;
-    pointer-events: none;
-    background: var(--bg-deep);
-    color: var(--on-deep);
-    border: 1px solid var(--gilt);
-    padding: 8px 12px;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    line-height: 1.6;
-    white-space: nowrap;
-    z-index: 10;
-    transform: translate(-50%, -115%);
-  }
-  .chart-tooltip .tt-date {
-    color: var(--gilt);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    font-size: 0.68rem;
-    margin-bottom: 4px;
-  }
-  .chart-tooltip .tt-row { display: flex; justify-content: space-between; gap: 16px; }
-  .chart-tooltip .tt-swatch { display: inline-block; width: 8px; height: 8px; margin-right: 6px; }
-
-  .chart-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 14px;
-  }
-
-  .range-toggle {
-    display: inline-flex;
-    border: 1px solid var(--line);
-  }
-  .range-btn {
-    background: transparent;
-    border: none;
-    border-right: 1px solid var(--line);
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    padding: 6px 14px;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
-  }
-  .range-btn:last-child { border-right: none; }
-  .range-btn:hover { color: var(--ink); }
-  .range-btn.active { background: var(--gilt); color: var(--bg-deep); font-weight: 600; }
-
-  .chart-hint {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--muted);
-    margin: 0;
-  }
-
-  .chart-legend {
-    display: flex;
-    gap: 10px;
-    margin-top: 18px;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    flex-wrap: wrap;
-  }
-  .legend-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    padding: 6px 10px;
-    border: 1px solid var(--line);
-    border-radius: 2px;
-    background: transparent;
-    color: var(--muted);
-    transition: opacity 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-  }
-  .legend-item:hover { border-color: var(--gilt); }
-  .legend-item:focus-visible { outline: 2px solid var(--gilt); outline-offset: 2px; }
-  .legend-item.series-on { color: var(--ink); }
-  .legend-item.series-highlighted { border-color: var(--gilt); }
-  .legend-item.series-dimmed { opacity: 0.45; }
-  .legend-item.series-nodata { border-style: dashed; }
-  .legend-nodata-note {
-    font-style: normal;
-    font-size: 0.68rem;
-    color: var(--oxblood);
-    margin-left: 2px;
-  }
-  .legend-checkbox {
-    width: 12px;
-    height: 12px;
-    border: 1.5px solid currentColor;
-    border-radius: 2px;
-    display: inline-block;
-    flex-shrink: 0;
-  }
-  .legend-item.series-on .legend-checkbox { background: var(--series-color, currentColor); border-color: var(--series-color, currentColor); }
-  .swatch { width: 14px; height: 3px; display: inline-block; }
-
-  /* ---------- Analysis teaser ---------- */
-  .article-card {
-    display: grid;
-    grid-template-columns: 96px 1fr;
-    gap: 22px;
-  }
-
-  .article-index {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--muted);
-    padding-top: 4px;
-  }
-
-  .article-card h3 {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    margin: 0 0 10px;
-    line-height: 1.25;
-  }
-
-  .article-card p.excerpt { color: var(--ink-soft); margin: 0 0 14px; max-width: 62ch; }
-
-  .byline {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  .read-link {
-    display: inline-block;
-    margin-top: 14px;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    text-decoration: none;
-    border-bottom: 1.5px solid var(--ink);
-    padding-bottom: 2px;
-  }
-
-  /* ---------- Methodology strip ---------- */
-  .method-strip {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-  .method-item {
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--ink-soft);
-  }
-  .method-item b {
-    display: block;
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    color: var(--ink);
-    margin-bottom: 6px;
-    text-transform: none;
-  }
-
-  /* ---------- Footer ---------- */
-  footer {
-    background: var(--bg-deep);
-    color: var(--on-deep);
-    margin-top: 40px;
-  }
-  .footer-wrap {
-    max-width: 1120px;
-    margin: 0 auto;
-    padding: 44px 24px 32px;
-    display: grid;
-    grid-template-columns: 1.3fr 1fr 1fr;
-    gap: 32px;
-  }
-  .footer-wrap h4 {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--gilt);
-    margin: 0 0 12px;
-  }
-  .footer-wrap p, .footer-wrap li { color: #C9CFDA; font-size: 0.88rem; }
-  .footer-wrap ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
-  .footer-wrap a { color: #C9CFDA; text-decoration: none; }
-  .footer-wrap a:hover { color: var(--on-deep); }
-  .footer-licensing {
-    max-width: 1120px;
-    margin: 8px auto 0;
-    padding: 0 24px 28px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-  }
-  .footer-licensing p {
-    color: var(--muted);
-    font-size: 0.78rem;
-    line-height: 1.7;
-    max-width: 90ch;
-    margin: 18px 0 0;
-  }
-  .footer-licensing a { color: var(--ink-soft); }
-  .footer-licensing a:hover { color: var(--gilt); }
-  .footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.12);
-    padding: 18px 24px;
-    text-align: center;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: #8592A6;
-  }
-
-  /* ---------- Responsive ---------- */
-  @media (max-width: 780px) {
-    nav ul { display: none; }
-    .hero-grid { grid-template-columns: 1fr; }
-    .stamp { margin-top: 0; }
-    .ledger-row { grid-template-columns: 1fr auto; }
-    .ledger-delta { grid-column: 2; }
-    .article-card { grid-template-columns: 1fr; }
-    .method-strip { grid-template-columns: 1fr; }
-    .footer-wrap { grid-template-columns: 1fr; }
-  }
-</style>
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
-<div class="draft-ribbon" id="status-ribbon">Loading live data from the pipeline…</div>
+<div class="status-banner" id="status-ribbon"></div>
 
 <header>
   <div class="nav-wrap">
     <div style="display:flex; align-items:baseline; gap:8px;">
       <a class="wordmark" href="#top" style="text-decoration:none;">Quidwatch</a>
-      <span style="font-family:var(--font-mono); font-size:0.62rem; font-weight:500; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase;">tracking UK money, weekly</span>
+      <span style="font-family:var(--font-mono); font-size:0.62rem; font-weight:500; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase;">tracking UK money</span>
     </div>
     <div style="display:flex; align-items:center; gap:20px;">
       <nav aria-label="Primary">
         <ul>
-          <li><a href="#ledger">This week</a></li>
+          <li><a href="#ledger">Latest figures</a></li>
           <li><a href="#savings">Savings vs inflation</a></li>
           <li><a href="#analysis">Analysis</a></li>
         </ul>
@@ -591,64 +34,64 @@
 
 <main id="top">
 
-  <!-- HERO: this week's ledger entry -->
+  <!-- HERO: latest figures -->
   <section class="hero">
-    <p class="hero-label" id="hero-label">Loading…</p>
     <div class="hero-grid">
       <div>
         <h1 id="hero-headline">Loading this month's figures…</h1>
+        <p class="hero-label" id="hero-label">Loading…</p>
         <p class="lede" id="hero-lede">Fetching the latest Bank of England and ONS data…</p>
         <p class="hero-note">"Real savings rate" here means the average time deposit rate minus CPI inflation - see the ledger below for the exact figures.</p>
         <div class="hero-cta">
           <a class="btn" href="#savings">See the full tracker</a>
-          <a class="btn ghost" href="#analysis">Read this week's analysis</a>
+          <a class="btn ghost" href="#analysis">Read the analysis</a>
         </div>
       </div>
       <div class="stamp" id="stamp" aria-hidden="true">…</div>
     </div>
   </section>
 
-  <!-- THIS WEEK'S LEDGER -->
+  <!-- LATEST FIGURES LEDGER -->
   <section class="block" id="ledger">
     <div class="block-head">
-      <h2>This week's ledger</h2>
+      <h2>Latest figures</h2>
       <span class="as-of" id="ledger-asof">Source: Bank of England · ONS</span>
     </div>
     <div class="ledger">
       <div class="ledger-row">
         <div class="ledger-label">Bank Rate<small>Set by the MPC</small></div>
-        <div class="ledger-value" id="bank-rate-value">—</div>
-        <div class="ledger-delta" id="bank-rate-delta">—</div>
+        <div class="ledger-value" id="bank-rate-value">-</div>
+        <div class="ledger-delta" id="bank-rate-delta">-</div>
       </div>
       <div class="ledger-row">
         <div class="ledger-label">CPI inflation<small>12-month rate, ONS</small></div>
-        <div class="ledger-value" id="cpi-value">—</div>
-        <div class="ledger-delta" id="cpi-delta">—</div>
+        <div class="ledger-value" id="cpi-value">-</div>
+        <div class="ledger-delta" id="cpi-delta">-</div>
       </div>
       <div class="ledger-row">
         <div class="ledger-label">Average time deposit rate<small>Effective rate, BoE</small></div>
-        <div class="ledger-value" id="time-value">—</div>
-        <div class="ledger-delta" id="time-delta">—</div>
+        <div class="ledger-value" id="time-value">-</div>
+        <div class="ledger-delta" id="time-delta">-</div>
       </div>
       <div class="ledger-row">
         <div class="ledger-label">Real savings rate<small>Time deposit rate minus CPI</small></div>
-        <div class="ledger-value" id="real-rate-value">—</div>
-        <div class="ledger-delta" id="real-rate-delta">—</div>
+        <div class="ledger-value" id="real-rate-value">-</div>
+        <div class="ledger-delta" id="real-rate-delta">-</div>
       </div>
       <div class="ledger-row">
-        <div class="ledger-label">Average instant-access rate<small>Effective rate, BoE — existing customers, blended</small></div>
-        <div class="ledger-value" id="instant-value">—</div>
-        <div class="ledger-delta" id="instant-delta">—</div>
+        <div class="ledger-label">Average instant-access rate<small>Effective rate, BoE (existing customers, blended)</small></div>
+        <div class="ledger-value" id="instant-value">-</div>
+        <div class="ledger-delta" id="instant-delta">-</div>
       </div>
       <div class="ledger-row">
         <div class="ledger-label">Quoted instant-access rate<small>New-customer rate, BoE</small></div>
-        <div class="ledger-value" id="quoted-value">—</div>
-        <div class="ledger-delta" id="quoted-delta">—</div>
+        <div class="ledger-value" id="quoted-value">-</div>
+        <div class="ledger-delta" id="quoted-delta">-</div>
       </div>
       <div class="ledger-row">
         <div class="ledger-label">Loyalty gap<small>Quoted rate minus average rate</small></div>
-        <div class="ledger-value" id="gap-value">—</div>
-        <div class="ledger-delta" id="gap-delta">—</div>
+        <div class="ledger-value" id="gap-value">-</div>
+        <div class="ledger-delta" id="gap-delta">-</div>
       </div>
     </div>
   </section>
@@ -679,14 +122,14 @@
   <section class="block" id="analysis">
     <div class="block-head">
       <h2>Analysis</h2>
-      <span class="as-of">New pieces as the data tells a story worth writing about</span>
     </div>
     <div class="article-card">
-      <div class="article-index">Coming soon</div>
+      <div class="article-index">No. 001</div>
       <div>
-        <h3>First analysis piece in progress</h3>
-        <p class="excerpt">I'm currently writing an in-depth look at how different types of savings accounts are performing against inflation, using the live figures tracked above. Check back shortly for the first published piece — every article on Quidwatch reflects my own analysis of the underlying Bank of England and ONS data.</p>
-        <p class="byline">Quidwatch · Data: Bank of England, ONS</p>
+        <h3><a href="articles/is-your-money-really-growing.html" style="color:inherit; text-decoration:none;">Is Your Money Really Growing When You Save?</a></h3>
+        <p class="excerpt">The average time deposit rate has stayed above 3% for three years, but a sharp CPI jump in April 2025 briefly pushed real returns negative. What the headline interest rate doesn't tell you about your savings.</p>
+        <p class="byline">Analysis by Sonia Leung · Data: Bank of England, ONS</p>
+        <a class="read-link" href="articles/is-your-money-really-growing.html">Read the full piece →</a>
       </div>
     </div>
   </section>
@@ -698,19 +141,19 @@
   <div class="footer-wrap">
     <div>
       <h4>Quidwatch</h4>
-      <p>An independent, data-led look at UK interest rates, inflation, and what they mean for everyday savers — built and maintained by one person, refreshed automatically, updated weekly. Not financial advice, and not affiliated with the Bank of England or ONS.</p>
+      <p>An independent, data-led look at UK interest rates, inflation, and what they mean for everyday savers, built and maintained by one person, with data checked and refreshed automatically each week. Not financial advice, and not affiliated with the Bank of England or ONS.</p>
     </div>
     <div>
       <h4>Data sources</h4>
       <ul>
-        <li><a href="https://www.bankofengland.co.uk/boeapps/iadb/" target="_blank" rel="noopener">Bank of England — IADB</a></li>
-        <li><a href="https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/d7g7/mm23" target="_blank" rel="noopener">ONS — CPI series (D7G7)</a></li>
+        <li><a href="https://www.bankofengland.co.uk/boeapps/iadb/" target="_blank" rel="noopener">Bank of England (IADB)</a></li>
+        <li><a href="https://www.ons.gov.uk/economy/inflationandpriceindices/timeseries/d7g7/mm23" target="_blank" rel="noopener">ONS CPI series (D7G7)</a></li>
       </ul>
     </div>
     <div>
       <h4>Site</h4>
       <ul>
-        <li><a href="#ledger">This week</a></li>
+        <li><a href="#ledger">Latest figures</a></li>
         <li><a href="#analysis">Analysis</a></li>
       </ul>
     </div>
@@ -719,11 +162,11 @@
     <p>
       <strong>Data licensing.</strong> Bank Rate and deposit rate figures are drawn from the Bank of England Database and reused under the
       <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener">Open Government Licence v3.0</a>,
-      copyright the Governor and Company of the Bank of England. CPI inflation figures are from the Office for National Statistics —
+      copyright the Governor and Company of the Bank of England. CPI inflation figures are from the Office for National Statistics.
       <em>Source: Office for National Statistics licensed under the Open Government Licence v3.0</em>, © Crown copyright.
       Quidwatch is an independent project and is not affiliated with, endorsed by, or sponsored by the Bank of England or the ONS.
       Figures are for general information only and neither data provider warrants their accuracy or completeness.
-      This is a factual summary, not legal advice — see the
+      This is a factual summary, not legal advice. See the
       <a href="https://www.bankofengland.co.uk/legal" target="_blank" rel="noopener">Bank of England's legal terms</a> and
       <a href="https://www.ons.gov.uk/help/terms-conditions" target="_blank" rel="noopener">ONS terms and conditions</a> directly for authoritative detail.
     </p>
@@ -734,13 +177,13 @@
 <script>
 (function () {
   const fmtPct = (v, decimals = 2) => {
-    if (v === null || v === undefined || Number.isNaN(v)) return "—";
+    if (v === null || v === undefined || Number.isNaN(v)) return "-";
     const sign = v < 0 ? "\u2212" : "";
     return sign + Math.abs(v).toFixed(decimals) + "%";
   };
 
   const fmtDate = (isoString) => {
-    if (!isoString) return "—";
+    if (!isoString) return "-";
     const d = new Date(isoString);
     return d.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
   };
@@ -1066,17 +509,20 @@
       const latestAnyIdx = rows.indexOf(latestAny);
       const previousBankRate = latestAnyIdx > 0 ? rows[latestAnyIdx - 1].bank_rate : null;
 
-      ribbon.textContent = `Live data - Bank Rate as of ${fmtDate(latestAny.date)}, other figures as of ${fmtDate(latest.date)} (latest published)`;
+      // Note: we deliberately don't populate the status banner here on
+      // success - the same "as of" info is already shown in the ledger
+      // section below. The banner is reserved for genuine load errors,
+      // in the catch block.
 
       // --- Hero ---
       const isPositive = latest.real_rate_time_deposits >= 0;
-      document.getElementById("hero-label").textContent = `Latest complete data — ${fmtDate(latest.date)}`;
+      document.getElementById("hero-label").textContent = `Latest complete data: ${fmtDate(latest.date)}`;
       document.getElementById("hero-headline").innerHTML = isPositive
         ? `Real savings rate: <span class="pos">${fmtPct(latest.real_rate_time_deposits)}</span>.<br>Cash is just about keeping pace with inflation.`
         : `Real savings rate: <span class="neg">${fmtPct(latest.real_rate_time_deposits)}</span>.<br>Cash is still losing value.`;
       document.getElementById("hero-lede").textContent = isPositive
-        ? `The average UK saver in a time-deposit account is earning slightly more than inflation is eating away — meaning saved money is roughly holding its real value this month, based on official Bank of England and ONS data.`
-        : `The average UK saver in a time-deposit account earns less than inflation is eating away — meaning that money is worth slightly less each month, based on official Bank of England and ONS data.`;
+        ? `The average UK saver in a time-deposit account is earning slightly more than inflation is eating away, meaning saved money is roughly holding its real value this month, based on official Bank of England and ONS data.`
+        : `The average UK saver in a time-deposit account earns less than inflation is eating away, meaning that money is worth slightly less each month, based on official Bank of England and ONS data.`;
 
       const stamp = document.getElementById("stamp");
       stamp.innerHTML = `<b>${fmtPct(latest.real_rate_time_deposits)}</b>REAL RATE<br>${isPositive ? "POSITIVE" : "NEGATIVE"}`;
@@ -1085,7 +531,7 @@
 
       // --- Ledger ---
       document.getElementById("ledger-asof").textContent =
-        `Source: Bank of England · ONS — Bank Rate as of ${fmtDate(latestAny.date)}, other figures as of ${fmtDate(latest.date)}`;
+        `Source: Bank of England, ONS. Bank Rate as of ${fmtDate(latestAny.date)}, other figures as of ${fmtDate(latest.date)}`;
 
       document.getElementById("bank-rate-value").textContent = fmtPct(latestAny.bank_rate);
       setDelta("bank-rate-delta", latestAny.bank_rate, previousBankRate, "neutral");
@@ -1118,7 +564,7 @@
 
       // --- Footer: show real data freshness instead of a static date ---
       document.getElementById("footer-bottom").textContent =
-        `Quidwatch — data last refreshed ${fmtDate(latestAny.date)} (Bank Rate) / ${fmtDate(latest.date)} (CPI & deposit rates).`;
+        `Quidwatch: data last refreshed ${fmtDate(latestAny.date)} (Bank Rate) / ${fmtDate(latest.date)} (CPI & deposit rates).`;
 
       // --- Chart: store the full history, default to the 3Y range,
       // then let the range buttons re-slice without re-fetching. ---
@@ -1128,6 +574,7 @@
     } catch (err) {
       ribbon.textContent = `Could not load live data (${err.message}). Are you running this through a local server, not by double-clicking the file?`;
       ribbon.style.background = "var(--oxblood)";
+      ribbon.style.display = "block";
       console.error(err);
     }
   }

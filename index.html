@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quidwatch — UK personal finance, tracked with data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #171533;
+    --bg-elevated: #211D47;
+    --bg-deep: #100E26;
+    --ink: #F3F1FA;
+    --ink-soft: #B7B2D6;
+    --sterling-green: #4FD1A0;
+    --oxblood: #E85D75;
+    --gilt: #C9A24B;
+    --line: #3A3468;
+    --muted: #8B84B5;
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Source Serif 4', Georgia, serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.55;
+  }
+
+  a { color: inherit; }
+
+  :focus-visible {
+    outline: 2px solid var(--gilt);
+    outline-offset: 3px;
+  }
+
+  .draft-ribbon {
+    background: var(--bg-deep);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-align: center;
+    padding: 6px 12px;
+    text-transform: uppercase;
+  }
+
+  .draft-ribbon strong { color: var(--gilt); }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+    border-bottom: 2px solid var(--gilt);
+  }
+
+  .nav-wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.35rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .wordmark span {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 28px;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  nav a { text-decoration: none; color: var(--ink-soft); border-bottom: 1px solid transparent; padding-bottom: 3px; }
+  nav a:hover { border-bottom-color: var(--gilt); color: var(--ink); }
+
+  .nav-toggle { display: none; }
+
+  /* ---------- Hero / this week's ledger entry ---------- */
+  .hero {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 64px 24px 56px;
+    position: relative;
+  }
+
+  .hero-label {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.1rem, 4.2vw, 3.4rem);
+    line-height: 1.08;
+    margin: 0 0 20px;
+    letter-spacing: -0.01em;
+  }
+
+  .hero h1 .neg { color: var(--oxblood); }
+  .hero h1 .pos { color: var(--sterling-green); }
+
+  .hero p.lede {
+    font-size: 1.12rem;
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin: 0 0 28px;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    gap: 14px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .btn {
+    padding: 11px 20px;
+    text-decoration: none;
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .btn:hover { background: var(--gilt); color: var(--bg-deep); border-color: var(--gilt); }
+  .btn.ghost { border-color: var(--line); color: var(--muted); }
+  .btn.ghost:hover { background: transparent; color: var(--ink); border-color: var(--ink); }
+
+  /* Stamp */
+  .stamp {
+    width: 148px;
+    height: 148px;
+    border: 3px double var(--oxblood);
+    border-radius: 50%;
+    color: var(--oxblood);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    line-height: 1.35;
+    transform: rotate(-9deg);
+    padding: 14px;
+    flex-shrink: 0;
+    animation: stamp-in 0.5s cubic-bezier(.2,1.6,.4,1) both;
+    animation-delay: 0.15s;
+    margin-top: 8px;
+  }
+
+  .stamp b { display: block; font-size: 0.95rem; letter-spacing: 0.02em; margin-bottom: 2px; }
+
+  @keyframes stamp-in {
+    0% { opacity: 0; transform: rotate(-9deg) scale(2); }
+    100% { opacity: 1; transform: rotate(-9deg) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stamp { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* ---------- Section shell ---------- */
+  section.block {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 48px 24px;
+    border-top: 1px solid var(--line);
+  }
+
+  .block-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 22px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .block-head h2 {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+
+  .block-head .as-of {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* ---------- Ledger rows ---------- */
+  .ledger { border-top: 1px solid var(--ink); }
+
+  .ledger-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 18px;
+    align-items: center;
+    padding: 16px 4px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .ledger-row:hover { background: var(--bg-elevated); }
+
+  .ledger-label { font-size: 1rem; }
+  .ledger-label small {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+
+  .ledger-value {
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+    font-weight: 500;
+    text-align: right;
+    min-width: 90px;
+  }
+
+  .ledger-value.pos { color: var(--sterling-green); }
+  .ledger-value.neg { color: var(--oxblood); }
+
+  .ledger-delta {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-align: right;
+    min-width: 70px;
+    color: var(--muted);
+  }
+  .ledger-delta.pos { color: var(--sterling-green); }
+  .ledger-delta.neg { color: var(--oxblood); }
+
+  /* ---------- Chart block ---------- */
+  .chart-card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--line);
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chart-tooltip {
+    display: none;
+    position: absolute;
+    pointer-events: none;
+    background: var(--bg-deep);
+    color: var(--ink);
+    border: 1px solid var(--gilt);
+    padding: 8px 12px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    white-space: nowrap;
+    z-index: 10;
+    transform: translate(-50%, -115%);
+  }
+  .chart-tooltip .tt-date {
+    color: var(--gilt);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.68rem;
+    margin-bottom: 4px;
+  }
+  .chart-tooltip .tt-row { display: flex; justify-content: space-between; gap: 16px; }
+  .chart-tooltip .tt-swatch { display: inline-block; width: 8px; height: 8px; margin-right: 6px; }
+
+  .chart-legend {
+    display: flex;
+    gap: 22px;
+    margin-top: 18px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    flex-wrap: wrap;
+  }
+  .chart-legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .swatch { width: 14px; height: 3px; display: inline-block; }
+
+  /* ---------- BoE decision card ---------- */
+  .decision-card {
+    border-left: 4px solid var(--gilt);
+    padding: 20px 26px;
+    background: var(--bg-elevated);
+  }
+
+  .decision-card .tag {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gilt);
+    margin: 0 0 8px;
+  }
+
+  .decision-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    margin: 0 0 10px;
+  }
+
+  .decision-card p { margin: 0 0 10px; color: var(--ink-soft); }
+  .decision-card .vote { font-family: var(--font-mono); font-size: 0.82rem; color: var(--muted); }
+
+  /* ---------- Weekly analysis teaser ---------- */
+  .article-card {
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    gap: 22px;
+  }
+
+  .article-index {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    padding-top: 4px;
+  }
+
+  .article-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin: 0 0 10px;
+    line-height: 1.25;
+  }
+
+  .article-card p.excerpt { color: var(--ink-soft); margin: 0 0 14px; max-width: 62ch; }
+
+  .byline {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .read-link {
+    display: inline-block;
+    margin-top: 14px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 2px;
+  }
+
+  /* ---------- Methodology strip ---------- */
+  .method-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .method-item {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+  .method-item b {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    color: var(--ink);
+    margin-bottom: 6px;
+    text-transform: none;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    background: var(--bg-deep);
+    color: var(--ink);
+    margin-top: 40px;
+  }
+  .footer-wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 44px 24px 32px;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr 1fr;
+    gap: 32px;
+  }
+  .footer-wrap h4 {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--gilt);
+    margin: 0 0 12px;
+  }
+  .footer-wrap p, .footer-wrap li { color: #C9CFDA; font-size: 0.88rem; }
+  .footer-wrap ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .footer-wrap a { color: #C9CFDA; text-decoration: none; }
+  .footer-wrap a:hover { color: var(--ink); }
+  .footer-licensing {
+    max-width: 1120px;
+    margin: 8px auto 0;
+    padding: 0 24px 28px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .footer-licensing p {
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.7;
+    max-width: 90ch;
+    margin: 18px 0 0;
+  }
+  .footer-licensing a { color: var(--ink-soft); }
+  .footer-licensing a:hover { color: var(--gilt); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding: 18px 24px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: #8592A6;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 780px) {
+    nav ul { display: none; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .stamp { margin-top: 0; }
+    .ledger-row { grid-template-columns: 1fr auto; }
+    .ledger-delta { grid-column: 2; }
+    .article-card { grid-template-columns: 1fr; }
+    .method-strip { grid-template-columns: 1fr; }
+    .footer-wrap { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="draft-ribbon" id="status-ribbon">Loading live data from the pipeline…</div>
+
+<header>
+  <div class="nav-wrap">
+    <div style="display:flex; align-items:baseline; gap:8px;">
+      <a class="wordmark" href="#top" style="text-decoration:none;">Quidwatch</a>
+      <span style="font-family:var(--font-mono); font-size:0.62rem; font-weight:500; color:var(--muted); letter-spacing:0.08em; text-transform:uppercase;">tracking UK money, weekly</span>
+    </div>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#ledger">This week</a></li>
+        <li><a href="#savings">Savings vs inflation</a></li>
+        <li><a href="#boe">BoE decisions</a></li>
+        <li><a href="#analysis">Weekly analysis</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO: this week's ledger entry -->
+  <section class="hero">
+    <p class="hero-label" id="hero-label">Loading…</p>
+    <div class="hero-grid">
+      <div>
+        <h1 id="hero-headline">Loading this month's figures…</h1>
+        <p class="lede" id="hero-lede">Fetching the latest Bank of England and ONS data…</p>
+        <div class="hero-cta">
+          <a class="btn" href="#savings">See the full tracker</a>
+          <a class="btn ghost" href="#analysis">Read this week's analysis</a>
+        </div>
+      </div>
+      <div class="stamp" id="stamp" aria-hidden="true">…</div>
+    </div>
+  </section>
+
+  <!-- THIS WEEK'S LEDGER -->
+  <section class="block" id="ledger">
+    <div class="block-head">
+      <h2>This week's ledger</h2>
+      <span class="as-of" id="ledger-asof">Source: Bank of England · ONS</span>
+    </div>
+    <div class="ledger">
+      <div class="ledger-row">
+        <div class="ledger-label">Bank Rate<small>Set by the MPC</small></div>
+        <div class="ledger-value" id="bank-rate-value">—</div>
+        <div class="ledger-delta" id="bank-rate-delta">—</div>
+      </div>
+      <div class="ledger-row">
+        <div class="ledger-label">CPI inflation<small>12-month rate, ONS</small></div>
+        <div class="ledger-value" id="cpi-value">—</div>
+        <div class="ledger-delta" id="cpi-delta">—</div>
+      </div>
+      <div class="ledger-row">
+        <div class="ledger-label">Average time deposit rate<small>Effective rate, BoE</small></div>
+        <div class="ledger-value" id="time-value">—</div>
+        <div class="ledger-delta" id="time-delta">—</div>
+      </div>
+      <div class="ledger-row">
+        <div class="ledger-label">Average instant-access rate<small>Effective rate, BoE</small></div>
+        <div class="ledger-value" id="instant-value">—</div>
+        <div class="ledger-delta" id="instant-delta">—</div>
+      </div>
+      <div class="ledger-row">
+        <div class="ledger-label">Real savings rate<small>Time deposit rate minus CPI</small></div>
+        <div class="ledger-value" id="real-rate-value">—</div>
+        <div class="ledger-delta" id="real-rate-delta">—</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAVINGS VS INFLATION CHART -->
+  <section class="block" id="savings">
+    <div class="block-head">
+      <h2>Savings vs inflation, tracked over time</h2>
+      <span class="as-of" id="chart-asof">Loading history…</span>
+    </div>
+    <div class="chart-card">
+      <div id="chart-container">Loading chart…</div>
+      <div id="chart-tooltip" class="chart-tooltip"></div>
+      <div class="chart-legend">
+        <span><i class="swatch" style="background:var(--oxblood)"></i>CPI inflation</span>
+        <span><i class="swatch" style="background:var(--sterling-green)"></i>Time deposit rate (avg)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOE DECISION -->
+  <section class="block" id="boe">
+    <div class="block-head">
+      <h2>Latest MPC decision</h2>
+      <span class="as-of">Meeting: sample date</span>
+    </div>
+    <div class="decision-card">
+      <p class="tag">🚧 Not yet wired up — placeholder</p>
+      <h3>MPC votes to hold Bank Rate at 4.25%</h3>
+      <p>Placeholder summary: what changed since the last meeting, and what it means for mortgage and savings rates in plain English — written by us, not lifted from a press release.</p>
+      <p class="vote">Vote split: sample · Next meeting: sample date</p>
+    </div>
+  </section>
+
+  <!-- WEEKLY ANALYSIS TEASER -->
+  <section class="block" id="analysis">
+    <div class="block-head">
+      <h2>Weekly analysis</h2>
+      <span class="as-of">Published every Friday</span>
+    </div>
+    <div class="article-card">
+      <div class="article-index">🚧 Draft</div>
+      <div>
+        <h3>Why "high interest" savings accounts still aren't keeping up with prices</h3>
+        <p class="excerpt">Placeholder excerpt — this is where the actual weekly write-up goes: the interpretation, the caveats, and the reasoning that's yours to defend. Two or three paragraphs, grounded in this week's ledger figures above.</p>
+        <p class="byline">Analysis — your name · Data: Bank of England, ONS</p>
+        <a class="read-link" href="#">Read the full piece →</a>
+      </div>
+    </div>
+  </section>
+
+
+</main>
+
+<footer>
+  <div class="footer-wrap">
+    <div>
+      <h4>Quidwatch</h4>
+      <p>An independent, data-led look at UK interest rates, inflation, and what they mean for everyday savers — built and maintained by one person, refreshed automatically, updated weekly. Not financial advice, and not affiliated with the Bank of England or ONS.</p>
+    </div>
+    <div>
+      <h4>Data sources</h4>
+      <ul>
+        <li><a href="#">Bank of England — IADB</a></li>
+        <li><a href="#">ONS — API</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Site</h4>
+      <ul>
+        <li><a href="#ledger">This week</a></li>
+        <li><a href="#analysis">Weekly analysis</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-licensing">
+    <p>
+      <strong>Data licensing.</strong> Bank Rate and deposit rate figures are drawn from the Bank of England Database and reused under the
+      <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener">Open Government Licence v3.0</a>,
+      copyright the Governor and Company of the Bank of England. CPI inflation figures are from the Office for National Statistics —
+      <em>Source: Office for National Statistics licensed under the Open Government Licence v3.0</em>, © Crown copyright.
+      Quidwatch is an independent project and is not affiliated with, endorsed by, or sponsored by the Bank of England or the ONS.
+      Figures are for general information only and neither data provider warrants their accuracy or completeness.
+      This is a factual summary, not legal advice — see the
+      <a href="https://www.bankofengland.co.uk/legal" target="_blank" rel="noopener">Bank of England's legal terms</a> and
+      <a href="https://www.ons.gov.uk/help/terms-conditions" target="_blank" rel="noopener">ONS terms and conditions</a> directly for authoritative detail.
+    </p>
+  </div>
+  <div class="footer-bottom">Quidwatch — draft layout, 07 Aug 2026.</div>
+</footer>
+
+<script>
+(function () {
+  const fmtPct = (v, decimals = 2) => {
+    if (v === null || v === undefined || Number.isNaN(v)) return "—";
+    const sign = v < 0 ? "\u2212" : "";
+    return sign + Math.abs(v).toFixed(decimals) + "%";
+  };
+
+  const fmtDate = (isoString) => {
+    if (!isoString) return "—";
+    const d = new Date(isoString);
+    return d.toLocaleDateString("en-GB", { month: "long", year: "numeric" });
+  };
+
+  const fmtDateShort = (isoString) => {
+    const d = new Date(isoString);
+    return d.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
+  };
+
+  // direction: 'up-good' = rising is favourable (green), 'up-bad' = rising is
+  // unfavourable (red), 'neutral' = no colour judgement (e.g. Bank Rate).
+  function deltaHtml(current, previous, direction) {
+    if (current === null || previous === null || current === undefined || previous === undefined) {
+      return { html: "no prior month", cls: "" };
+    }
+    const diff = current - previous;
+    if (Math.abs(diff) < 0.005) return { html: "unchanged", cls: "" };
+
+    const arrow = diff > 0 ? "\u25B2" : "\u25BC";
+    const text = `${arrow} ${Math.abs(diff).toFixed(2)}pp`;
+
+    let cls = "";
+    if (direction === "up-good") cls = diff > 0 ? "pos" : "neg";
+    if (direction === "up-bad") cls = diff > 0 ? "neg" : "pos";
+    return { html: text, cls };
+  }
+
+  function setDelta(elId, current, previous, direction) {
+    const el = document.getElementById(elId);
+    const { html, cls } = deltaHtml(current, previous, direction);
+    el.textContent = html;
+    el.className = "ledger-delta" + (cls ? " " + cls : "");
+  }
+
+  // Chart hover state - lives outside buildChart so the onmouseenter/
+  // onmousemove attributes rendered into the SVG string can reach it.
+  let chartPoints = [];
+
+  function showChartTooltip(evt, i) {
+    const p = chartPoints[i];
+    if (!p) return;
+
+    document.getElementById(`qw-dot-cpi-${i}`).setAttribute("opacity", "1");
+    document.getElementById(`qw-dot-time-${i}`).setAttribute("opacity", "1");
+    const guide = document.getElementById("qw-hover-guide");
+    guide.setAttribute("x1", p.x);
+    guide.setAttribute("x2", p.x);
+    guide.setAttribute("opacity", "1");
+
+    const tooltip = document.getElementById("chart-tooltip");
+    tooltip.innerHTML = `
+      <div class="tt-date">${p.label}</div>
+      <div class="tt-row"><span><i class="tt-swatch" style="background:var(--oxblood)"></i>CPI</span><span>${fmtPct(p.cpi)}</span></div>
+      <div class="tt-row"><span><i class="tt-swatch" style="background:var(--sterling-green)"></i>Time deposit</span><span>${fmtPct(p.time)}</span></div>
+    `;
+
+    const containerRect = document.getElementById("chart-container").getBoundingClientRect();
+    tooltip.style.left = `${evt.clientX - containerRect.left}px`;
+    tooltip.style.top = `${evt.clientY - containerRect.top}px`;
+    tooltip.style.display = "block";
+  }
+
+  function hideChartTooltip() {
+    chartPoints.forEach((_, i) => {
+      const cpiDot = document.getElementById(`qw-dot-cpi-${i}`);
+      const timeDot = document.getElementById(`qw-dot-time-${i}`);
+      if (cpiDot) cpiDot.setAttribute("opacity", "0");
+      if (timeDot) timeDot.setAttribute("opacity", "0");
+    });
+    const guide = document.getElementById("qw-hover-guide");
+    if (guide) guide.setAttribute("opacity", "0");
+    const tooltip = document.getElementById("chart-tooltip");
+    if (tooltip) tooltip.style.display = "none";
+  }
+
+  // Exposed on window because the SVG markup below is injected via
+  // innerHTML, so inline event attributes are the simplest reliable way
+  // to wire up hover behaviour on dynamically-created elements.
+  window.__qwChartHover = showChartTooltip;
+  window.__qwChartHoverEnd = hideChartTooltip;
+
+  function buildChart(rows) {
+    const w = 760, h = 260, padTop = 20, padBottom = 34, padLeft = 4, padRight = 4;
+    const plotW = w - padLeft - padRight;
+    const plotBottom = h - padBottom;
+
+    const cpiVals = rows.map((r) => r.cpi_annual_rate);
+    const timeVals = rows.map((r) => r.time_deposit_rate);
+    const allVals = cpiVals.concat(timeVals);
+    const min = Math.min(...allVals);
+    const max = Math.max(...allVals);
+    const range = max - min || 1;
+
+    const x = (i) => padLeft + (i / (rows.length - 1)) * plotW;
+    const y = (v) => padTop + (1 - (v - min) / range) * (plotBottom - padTop);
+
+    const toPoints = (vals) => vals.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+
+    // Store per-point data for the hover handlers to read.
+    chartPoints = rows.map((r, i) => ({
+      x: x(i).toFixed(1),
+      label: fmtDate(r.date),
+      cpi: r.cpi_annual_rate,
+      time: r.time_deposit_rate,
+    }));
+
+    const gridLines = [0.25, 0.5, 0.75].map((f) => {
+      const gy = padTop + f * (plotBottom - padTop);
+      return `<line x1="0" y1="${gy}" x2="${w}" y2="${gy}" stroke="var(--line)" stroke-width="1"/>`;
+    }).join("");
+
+    // Aim for ~6 evenly spaced axis labels, always including the first
+    // and last month, so the axis stays readable regardless of how many
+    // months of history are in the dataset.
+    const maxTicks = 6;
+    const tickStep = Math.max(1, Math.ceil((rows.length - 1) / (maxTicks - 1)));
+    const tickIndices = [];
+    for (let i = 0; i < rows.length; i += tickStep) tickIndices.push(i);
+    if (tickIndices[tickIndices.length - 1] !== rows.length - 1) tickIndices.push(rows.length - 1);
+
+    const axisLabels = tickIndices.map((i) => {
+      const anchor = i === 0 ? "start" : i === rows.length - 1 ? "end" : "middle";
+      return `<text x="${x(i).toFixed(1)}" y="${h - 12}" font-family="IBM Plex Mono" font-size="11" fill="var(--muted)" text-anchor="${anchor}">${fmtDateShort(rows[i].date)}</text>`;
+    }).join("");
+
+    // Invisible hover-target strips, one per month, wide enough to be an
+    // easy mouse target even though the actual data points are thin.
+    const hoverWidth = plotW / Math.max(1, rows.length - 1);
+    const hoverTargets = rows.map((r, i) => {
+      const left = (x(i) - hoverWidth / 2).toFixed(1);
+      return `<rect x="${left}" y="0" width="${hoverWidth.toFixed(1)}" height="${plotBottom}" fill="transparent" style="cursor:pointer" onmousemove="window.__qwChartHover(event, ${i})" onmouseleave="window.__qwChartHoverEnd()"/>`;
+    }).join("");
+
+    const cpiDots = rows.map((r, i) => `<circle id="qw-dot-cpi-${i}" cx="${x(i).toFixed(1)}" cy="${y(r.cpi_annual_rate).toFixed(1)}" r="4" fill="var(--oxblood)" stroke="#FFFFFF" stroke-width="1.5" opacity="0" style="pointer-events:none"/>`).join("");
+    const timeDots = rows.map((r, i) => `<circle id="qw-dot-time-${i}" cx="${x(i).toFixed(1)}" cy="${y(r.time_deposit_rate).toFixed(1)}" r="4" fill="var(--sterling-green)" stroke="#FFFFFF" stroke-width="1.5" opacity="0" style="pointer-events:none"/>`).join("");
+
+    return `
+      <svg viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="Line chart comparing the average time deposit rate to CPI inflation over time. Hover over the chart to see monthly figures.">
+        ${gridLines}
+        <line x1="0" y1="${plotBottom}" x2="${w}" y2="${plotBottom}" stroke="var(--ink)" stroke-width="1.5"/>
+        <polyline fill="none" stroke="var(--oxblood)" stroke-width="2.5" points="${toPoints(cpiVals)}" style="pointer-events:none"/>
+        <polyline fill="none" stroke="var(--sterling-green)" stroke-width="2.5" points="${toPoints(timeVals)}" style="pointer-events:none"/>
+        <line id="qw-hover-guide" x1="0" y1="0" x2="0" y2="${plotBottom}" stroke="var(--ink)" stroke-width="1" stroke-dasharray="3,3" opacity="0" style="pointer-events:none"/>
+        ${cpiDots}
+        ${timeDots}
+        ${axisLabels}
+        ${hoverTargets}
+      </svg>
+    `;
+  }
+
+  async function init() {
+    const ribbon = document.getElementById("status-ribbon");
+    try {
+      const res = await fetch("data/processed/quidwatch_monthly.json");
+      if (!res.ok) throw new Error(`Fetch failed: HTTP ${res.status}`);
+      const rows = await res.json();
+
+      if (!rows.length) throw new Error("Dataset is empty");
+
+      // Bank Rate is meaningful even for the very latest row (it doesn't
+      // depend on a lagging publication), so use the true latest row for
+      // that specific figure. CPI/deposit rates need a "complete" row.
+      const latestAny = rows[rows.length - 1];
+      const complete = rows.filter(
+        (r) => r.cpi_annual_rate !== null && r.time_deposit_rate !== null && r.instant_access_deposit_rate !== null
+      );
+
+      if (!complete.length) throw new Error("No complete rows yet - check back after the next data refresh");
+
+      const latest = complete[complete.length - 1];
+      const previous = complete.length > 1 ? complete[complete.length - 2] : null;
+
+      // Bank Rate row: compare against whatever the prior row in the full
+      // (not just "complete") series was, since Bank Rate itself is never null.
+      const latestAnyIdx = rows.indexOf(latestAny);
+      const previousBankRate = latestAnyIdx > 0 ? rows[latestAnyIdx - 1].bank_rate : null;
+
+      ribbon.textContent = `Live data - Bank Rate as of ${fmtDate(latestAny.date)}, other figures as of ${fmtDate(latest.date)} (latest published)`;
+
+      // --- Hero ---
+      const isPositive = latest.real_rate_time_deposits >= 0;
+      document.getElementById("hero-label").textContent = `Latest complete data — ${fmtDate(latest.date)}`;
+      document.getElementById("hero-headline").innerHTML = isPositive
+        ? `Real savings rate: <span class="pos">${fmtPct(latest.real_rate_time_deposits)}</span>.<br>Cash is just about keeping pace with inflation.`
+        : `Real savings rate: <span class="neg">${fmtPct(latest.real_rate_time_deposits)}</span>.<br>Cash is still losing value.`;
+      document.getElementById("hero-lede").textContent = isPositive
+        ? `The average UK saver in a time-deposit account is earning slightly more than inflation is eating away — meaning saved money is roughly holding its real value this month, based on official Bank of England and ONS data.`
+        : `The average UK saver in a time-deposit account earns less than inflation is eating away — meaning that money is worth slightly less each month, based on official Bank of England and ONS data.`;
+
+      const stamp = document.getElementById("stamp");
+      stamp.innerHTML = `<b>${fmtPct(latest.real_rate_time_deposits)}</b>REAL RATE<br>${isPositive ? "POSITIVE" : "NEGATIVE"}`;
+      stamp.style.color = isPositive ? "var(--sterling-green)" : "var(--oxblood)";
+      stamp.style.borderColor = isPositive ? "var(--sterling-green)" : "var(--oxblood)";
+
+      // --- Ledger ---
+      document.getElementById("ledger-asof").textContent =
+        `Source: Bank of England · ONS — Bank Rate as of ${fmtDate(latestAny.date)}, other figures as of ${fmtDate(latest.date)}`;
+
+      document.getElementById("bank-rate-value").textContent = fmtPct(latestAny.bank_rate);
+      setDelta("bank-rate-delta", latestAny.bank_rate, previousBankRate, "neutral");
+
+      document.getElementById("cpi-value").textContent = fmtPct(latest.cpi_annual_rate);
+      setDelta("cpi-delta", latest.cpi_annual_rate, previous ? previous.cpi_annual_rate : null, "up-bad");
+
+      document.getElementById("time-value").textContent = fmtPct(latest.time_deposit_rate);
+      setDelta("time-delta", latest.time_deposit_rate, previous ? previous.time_deposit_rate : null, "up-good");
+
+      document.getElementById("instant-value").textContent = fmtPct(latest.instant_access_deposit_rate);
+      setDelta("instant-delta", latest.instant_access_deposit_rate, previous ? previous.instant_access_deposit_rate : null, "up-good");
+
+      const realValEl = document.getElementById("real-rate-value");
+      realValEl.textContent = fmtPct(latest.real_rate_time_deposits);
+      realValEl.className = "ledger-value " + (isPositive ? "pos" : "neg");
+      setDelta("real-rate-delta", latest.real_rate_time_deposits, previous ? previous.real_rate_time_deposits : null, "up-good");
+
+      // --- Chart (last 36 complete months, or all of them if fewer) ---
+      const chartRows = complete.slice(-36);
+      document.getElementById("chart-container").innerHTML = buildChart(chartRows);
+      document.getElementById("chart-asof").textContent =
+        `${fmtDateShort(chartRows[0].date)} – ${fmtDateShort(chartRows[chartRows.length - 1].date)}, refreshed weekly`;
+    } catch (err) {
+      ribbon.textContent = `Could not load live data (${err.message}). Are you running this through a local server, not by double-clicking the file?`;
+      ribbon.style.background = "var(--oxblood)";
+      console.error(err);
+    }
+  }
+
+  init();
+})();
+</script>
+
+</body>
+</html>

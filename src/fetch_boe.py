@@ -42,12 +42,14 @@ REQUEST_HEADERS = {
 
 # Human-readable names for the series we track. Extend this as the site grows.
 # Confirmed live and actively publishing (2026-08) - earlier attempts
-# (Z6IQ/Z6IW, then IUMB6VK/IUMWTTA) either didn't exist or had gone stale.
-# These are the aggregate "effective rate" series from BoE Table G1.4.
+# (Z6IQ/Z6IW, then IUMWTTA) either didn't exist or had gone stale.
 SERIES_LABELS = {
     "IUDBEDR": "bank_rate",
-    "CFMZ6IQ": "instant_access_deposit_rate",  # Table G1.4, effective rate
+    "CFMZ6IQ": "instant_access_deposit_rate",  # Table G1.4, effective/blended rate
     "CFMZ6IW": "time_deposit_rate",            # Table G1.4, effective rate
+    "IUMB6VK": "instant_access_quoted_rate",   # Table G1.3, quoted rate excl. bonus -
+                                                 # the "loyalty penalty" gap vs the
+                                                 # blended CFMZ6IQ rate above
 }
 
 

@@ -631,24 +631,14 @@
         <div class="ledger-delta" id="time-delta">—</div>
       </div>
       <div class="ledger-row">
-        <div class="ledger-label">Real savings rate<small>Time deposit rate minus CPI</small></div>
-        <div class="ledger-value" id="real-rate-value">—</div>
-        <div class="ledger-delta" id="real-rate-delta">—</div>
-      </div>
-      <div class="ledger-row">
-        <div class="ledger-label">Average instant-access rate<small>Effective rate, BoE — existing customers, blended</small></div>
+        <div class="ledger-label">Average instant-access rate<small>Effective rate, BoE</small></div>
         <div class="ledger-value" id="instant-value">—</div>
         <div class="ledger-delta" id="instant-delta">—</div>
       </div>
       <div class="ledger-row">
-        <div class="ledger-label">Quoted instant-access rate<small>New-customer rate, BoE</small></div>
-        <div class="ledger-value" id="quoted-value">—</div>
-        <div class="ledger-delta" id="quoted-delta">—</div>
-      </div>
-      <div class="ledger-row">
-        <div class="ledger-label">Loyalty gap<small>Quoted rate minus average rate</small></div>
-        <div class="ledger-value" id="gap-value">—</div>
-        <div class="ledger-delta" id="gap-delta">—</div>
+        <div class="ledger-label">Real savings rate<small>Time deposit rate minus CPI</small></div>
+        <div class="ledger-value" id="real-rate-value">—</div>
+        <div class="ledger-delta" id="real-rate-delta">—</div>
       </div>
     </div>
   </section>
@@ -1098,18 +1088,6 @@
 
       document.getElementById("instant-value").textContent = fmtPct(latest.instant_access_deposit_rate);
       setDelta("instant-delta", latest.instant_access_deposit_rate, previous ? previous.instant_access_deposit_rate : null, "up-good");
-
-      document.getElementById("quoted-value").textContent = fmtPct(latest.instant_access_quoted_rate);
-      setDelta("quoted-delta", latest.instant_access_quoted_rate, previous ? previous.instant_access_quoted_rate : null, "up-good");
-
-      // Loyalty gap: quoted minus average. A positive gap means existing
-      // savers are earning less than what's advertised to new customers -
-      // colour it as a "negative" (oxblood) in that normal case, since a
-      // bigger gap is worse for existing savers, not better.
-      const gapValEl = document.getElementById("gap-value");
-      gapValEl.textContent = fmtPct(latest.loyalty_gap);
-      gapValEl.className = "ledger-value " + (latest.loyalty_gap > 0 ? "neg" : "pos");
-      setDelta("gap-delta", latest.loyalty_gap, previous ? previous.loyalty_gap : null, "up-bad");
 
       const realValEl = document.getElementById("real-rate-value");
       realValEl.textContent = fmtPct(latest.real_rate_time_deposits);

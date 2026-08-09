@@ -22,7 +22,7 @@ params = {
     "csv.x": "yes",
     "Datefrom": "01/Jan/2024",
     "Dateto": "01/Mar/2024",
-    "SeriesCodes": "CFMZ6IQ,CFMZ6IW", # just one series, to keep this simple
+    "SeriesCodes": "IUDBEDR,CFMZ6IQ,CFMZ6IW,IUMB6VK",  # all 4 series together, as the real pipeline requests them
     "CSVF": "TN",
     "UsingCodes": "Y",
     "VPD": "Y",
@@ -39,5 +39,5 @@ print("First 30 lines of raw response, with line numbers:")
 print("=" * 60)
 
 lines = resp.text.splitlines()
-for i, line in enumerate(lines[:15], start=1):
+for i, line in enumerate(lines[:30], start=1):
     print(f"{i:>3}: {repr(line)}")

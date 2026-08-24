@@ -4955,7 +4955,7 @@
     "instant_access_deposit_rate":null,
     "time_deposit_rate":null,
     "instant_access_quoted_rate":1.95,
-    "cpi_annual_rate":null,
+    "cpi_annual_rate":2.9,
     "real_rate_time_deposits":null,
     "real_rate_instant_access":null,
     "loyalty_gap":null

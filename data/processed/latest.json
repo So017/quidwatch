@@ -1,11 +1,11 @@
 {
-  "as_of": "2026-06-01",
+  "as_of": "2026-07-01",
   "bank_rate": 3.75,
-  "cpi_annual_rate": 2.6,
-  "time_deposit_rate": 3.36,
+  "cpi_annual_rate": 2.9,
+  "time_deposit_rate": 3.39,
   "instant_access_deposit_rate": 1.65,
-  "instant_access_quoted_rate": 2.0,
-  "real_rate_time_deposits": 0.7599999999999998,
-  "real_rate_instant_access": -0.9500000000000002,
-  "loyalty_gap": 0.3500000000000001
+  "instant_access_quoted_rate": 1.94,
+  "real_rate_time_deposits": 0.4900000000000002,
+  "real_rate_instant_access": -1.25,
+  "loyalty_gap": 0.29000000000000004
 }

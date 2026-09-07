@@ -125,6 +125,7 @@ date,series_code,value,series_name
 2026-04-30,CFMZ6IQ,1.65,instant_access_deposit_rate
 2026-05-31,CFMZ6IQ,1.65,instant_access_deposit_rate
 2026-06-30,CFMZ6IQ,1.65,instant_access_deposit_rate
+2026-07-31,CFMZ6IQ,1.65,instant_access_deposit_rate
 2016-01-31,CFMZ6IW,1.44,time_deposit_rate
 2016-02-29,CFMZ6IW,1.44,time_deposit_rate
 2016-03-31,CFMZ6IW,1.42,time_deposit_rate
@@ -251,6 +252,7 @@ date,series_code,value,series_name
 2026-04-30,CFMZ6IW,3.29,time_deposit_rate
 2026-05-31,CFMZ6IW,3.31,time_deposit_rate
 2026-06-30,CFMZ6IW,3.36,time_deposit_rate
+2026-07-31,CFMZ6IW,3.39,time_deposit_rate
 1999-01-04,IUDBEDR,6.25,bank_rate
 1999-01-05,IUDBEDR,6.25,bank_rate
 1999-01-06,IUDBEDR,6.25,bank_rate
@@ -7238,6 +7240,11 @@ date,series_code,value,series_name
 2026-08-25,IUDBEDR,3.75,bank_rate
 2026-08-26,IUDBEDR,3.75,bank_rate
 2026-08-27,IUDBEDR,3.75,bank_rate
+2026-08-28,IUDBEDR,3.75,bank_rate
+2026-09-01,IUDBEDR,3.75,bank_rate
+2026-09-02,IUDBEDR,3.75,bank_rate
+2026-09-03,IUDBEDR,3.75,bank_rate
+2026-09-04,IUDBEDR,3.75,bank_rate
 2011-01-31,IUMB6VK,0.53,instant_access_quoted_rate
 2011-02-28,IUMB6VK,0.49,instant_access_quoted_rate
 2011-03-31,IUMB6VK,0.49,instant_access_quoted_rate
@@ -7424,4 +7431,5 @@ date,series_code,value,series_name
 2026-04-30,IUMB6VK,1.99,instant_access_quoted_rate
 2026-05-31,IUMB6VK,1.99,instant_access_quoted_rate
 2026-06-30,IUMB6VK,2.0,instant_access_quoted_rate
-2026-07-31,IUMB6VK,1.95,instant_access_quoted_rate
+2026-07-31,IUMB6VK,1.94,instant_access_quoted_rate
+2026-08-31,IUMB6VK,1.9,instant_access_quoted_rate

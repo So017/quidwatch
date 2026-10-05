@@ -4963,16 +4963,27 @@
   {
     "date":"2026-08-01T00:00:00.000",
     "bank_rate":3.75,
-    "instant_access_deposit_rate":null,
-    "time_deposit_rate":null,
+    "instant_access_deposit_rate":1.65,
+    "time_deposit_rate":3.41,
     "instant_access_quoted_rate":1.9,
     "cpi_annual_rate":3.1,
+    "real_rate_time_deposits":0.31,
+    "real_rate_instant_access":-1.45,
+    "loyalty_gap":0.25
+  },
+  {
+    "date":"2026-09-01T00:00:00.000",
+    "bank_rate":3.75,
+    "instant_access_deposit_rate":null,
+    "time_deposit_rate":null,
+    "instant_access_quoted_rate":null,
+    "cpi_annual_rate":null,
     "real_rate_time_deposits":null,
     "real_rate_instant_access":null,
     "loyalty_gap":null
   },
   {
-    "date":"2026-09-01T00:00:00.000",
+    "date":"2026-10-01T00:00:00.000",
     "bank_rate":3.75,
     "instant_access_deposit_rate":null,
     "time_deposit_rate":null,

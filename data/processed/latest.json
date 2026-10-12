@@ -4,8 +4,8 @@
   "cpi_annual_rate": 3.1,
   "time_deposit_rate": 3.41,
   "instant_access_deposit_rate": 1.65,
-  "instant_access_quoted_rate": 1.9,
+  "instant_access_quoted_rate": 1.88,
   "real_rate_time_deposits": 0.31000000000000005,
   "real_rate_instant_access": -1.4500000000000002,
-  "loyalty_gap": 0.25
+  "loyalty_gap": 0.22999999999999998
 }

@@ -7294,6 +7294,11 @@ date,series_code,value,series_name
 2026-11-04,IUDBEDR,3.75,bank_rate
 2026-11-05,IUDBEDR,4.0,bank_rate
 2026-11-06,IUDBEDR,4.0,bank_rate
+2026-11-09,IUDBEDR,4.0,bank_rate
+2026-11-10,IUDBEDR,4.0,bank_rate
+2026-11-11,IUDBEDR,4.0,bank_rate
+2026-11-12,IUDBEDR,4.0,bank_rate
+2026-11-13,IUDBEDR,4.0,bank_rate
 2011-01-31,IUMB6VK,0.53,instant_access_quoted_rate
 2011-02-28,IUMB6VK,0.49,instant_access_quoted_rate
 2011-03-31,IUMB6VK,0.49,instant_access_quoted_rate
